@@ -1,3 +1,4 @@
+unset UZ_PLUGINS
 typeset UZ_PATH=${0:A:h}
 typeset UZ_PLUGIN_PATH=${UZ_PLUGIN_PATH:-${UZ_PATH}/plugins}
 typeset -a UZ_PLUGINS
@@ -5,7 +6,8 @@ typeset -a UZ_PLUGINS
 zadd() {
   local zmodule=${1:t} zurl=${1} zscript=${2}
   local zpath=${UZ_PLUGIN_PATH}/${zmodule}
-  UZ_PLUGINS+=("${zpath}")
+  echo $UZ_PLUGINS | grep “${zpath}” || UZ_PLUGINS+=("${zpath}")
+  # UZ_PLUGINS+=("${zpath}")
 
   if [[ ! -d ${zpath} ]]; then
     mkdir -p ${zpath}
@@ -21,15 +23,15 @@ zadd() {
 }
 
 zupdate() {
-  for p in $(ls -d ${UZ_PLUGIN_PATH}/*/.git); do
+  for p in $(exa -d --no-icons ${UZ_PLUGIN_PATH}/*/.git); do
     echo -ne "\e[1;32m${${p%/*}:t}: \e[0m"
     echo -e "\r\033[0K$(git -C ${p%/*} pull)"
   done
 }
 
 zclean() {
-  for p in $(comm -23 <(ls -1d ${UZ_PLUGIN_PATH}/* | sort) <(printf '%s\n' $UZ_PLUGINS | sort)); do
+  for p in $(comm -23 <(exa -1d --no-icons ${UZ_PLUGIN_PATH}/* | sort) <(printf '%s\n' $UZ_PLUGINS | sort)); do
     echo -e "\e[1;33mCleaning:\e[0m \e[3m${p}\e[0m"
-    rm -rI $p
+    rm -ri $p
   done
 }

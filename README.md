@@ -1,3 +1,12 @@
+## What changes I made
+
+1. Add the first line in `uz.zsh`:`unset UZ_PLUGINS`. In this way we can avoid duplicate items in $UZ_PLUGINS
+2. Replace `ls` with `exa`. If you use `alias ls='exa --color always --icons'` in `.zshrc` just like me, this may be useful.
+
+---
+
+## Original
+
 ```txt
  /$$   /$$ /$$$$$$$$
 | $$  | $$|____ /$$/
@@ -37,7 +46,6 @@ zadd zsh-users/zsh-completions
 ```
 
 By default `µz` sources `init.zsh` or `plugin_name.(zsh|plugin.zsh|zsh-theme|sh)` but you can also specify another script to the `zadd` command as follows:
-
 
 ```zsh
 zadd username/repo script_name
