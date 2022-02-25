@@ -2,6 +2,7 @@
 
 1. Add the first line in `uz.zsh`:`unset UZ_PLUGINS`. In this way we can avoid duplicate items in $UZ_PLUGINS
 2. Replace `ls` with `exa`. If you use `alias ls='exa --color always --icons'` in `.zshrc` just like me, this may be useful.
+3. Run `zupdate` in parallel, requires `bat` here(because I use `bat` to replace `cat`), but it's easy to change to `cat` by yourself. (I don't know how to hidden the output from `&`(Process ID, done blabla.. and so on), if anyone know this, please tell me! So appreciated!)
 
 ---
 

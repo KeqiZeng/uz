@@ -6,8 +6,7 @@ typeset -a UZ_PLUGINS
 zadd() {
   local zmodule=${1:t} zurl=${1} zscript=${2}
   local zpath=${UZ_PLUGIN_PATH}/${zmodule}
-  echo $UZ_PLUGINS | grep “${zpath}” || UZ_PLUGINS+=("${zpath}")
-  # UZ_PLUGINS+=("${zpath}")
+  UZ_PLUGINS+=("${zpath}")
 
   if [[ ! -d ${zpath} ]]; then
     mkdir -p ${zpath}
@@ -23,9 +22,21 @@ zadd() {
 }
 
 zupdate() {
+  declare -i i j
+  i=0
+  j=0
   for p in $(exa -d --no-icons ${UZ_PLUGIN_PATH}/*/.git); do
-    echo -ne "\e[1;32m${${p%/*}:t}: \e[0m"
-    echo -e "\r\033[0K$(git -C ${p%/*} pull)"
+	git -C ${p%/*} pull > cache$i.txt &
+	((i++))
+  done
+  wait
+  echo ""
+  for p in $(exa -d --no-icons ${UZ_PLUGIN_PATH}/*/.git); do
+    echo -ne "\e[1;32m${${p%/*}:t}: \e[0m\n"
+	bat -p cache$j.txt
+	echo ""
+	rm cache$j.txt
+	((j++))
   done
 }
 
