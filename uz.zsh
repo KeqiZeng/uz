@@ -11,6 +11,7 @@ zadd() {
 }
 
 zinstall() {
+{
   local index1=1 index2=1 index3=1 exist=0
   declare -a installed_plugins use_plugins to_install
   mktemp -d .uz_cache > /dev/null
@@ -84,7 +85,7 @@ zinstall() {
   done
   rm -rf .uz_cache
   echo "\ndone"
-}
+} | grep -Ev "^[[0-9]]$"}
 
 zload() {
   local zmodule=${1:t} zurl=${1} zscript=${2}
@@ -103,6 +104,7 @@ for plugin in ${plugins[@]}; do
 done
 
 zupdate() {
+{
   local i=1
   local j=1
   mktemp -d .uz_cache > /dev/null
@@ -146,7 +148,7 @@ zupdate() {
 	done
   fi
   rm -rf .uz_cache
-}
+} | grep -Ev "^[[0-9]]$"}
 
 zclean() {
   if [ "${UZ_USE_EXA}" = true ]; then
