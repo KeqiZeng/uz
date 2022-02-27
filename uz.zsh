@@ -122,7 +122,7 @@ zupdate() {
   if [ "${UZ_USE_EXA}" = true ]; then
     for p in $(exa -d --no-icons ${UZ_PLUGIN_PATH}/*/.git); do
 	  file[$i]=$(mktemp .uz_cache/uz_cache.XXXX)
-	  git -C ${p%/*} pull > $file[$i] &
+	  git -C ${p%/*} pull &> $file[$i] &
 	  ((i++))
     done
   else
