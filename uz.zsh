@@ -98,8 +98,20 @@ zload() {
   fi
 }
 
+# Autoload
+dis_auto_load=0
 for plugin in ${plugins[@]}; do
-	zload $plugin
+  for dis_autoload in ${dis_autoloads[@]}; do
+	if [ "$plugin" = "$dis_autoload" ]; then
+	  dis_auto_load=1
+	  break
+	else
+ 	  dis_auto_load=0
+	fi
+  done
+  if [[ $dis_auto_load -eq 0 ]]; then
+    zload $plugin
+  fi
 done
 
 zupdate() {
@@ -162,3 +174,8 @@ zclean() {
     done
   fi
 }
+
+unset dis_auto_load
+unset dis_autoload
+unset dis_autoloads
+unset plugins
