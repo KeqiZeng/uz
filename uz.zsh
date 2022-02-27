@@ -66,7 +66,6 @@ zinstall() {
   for p in $to_install[@]; do
 	echo $p
   done
-  echo ""
   for p in $to_install[@]; do
 	file[$i]=$(mktemp .uz_cache/uz_cache.XXXX)
 	zadd $p &> $file[$i] &
@@ -85,7 +84,7 @@ zinstall() {
   done
   rm -rf .uz_cache
   echo "\ndone"
-} | grep -Ev "^[[0-9]]$"}
+} | grep -Ev "^[\d{0,3}]$" }
 
 zload() {
   local zmodule=${1:t} zurl=${1} zscript=${2}
@@ -148,7 +147,7 @@ zupdate() {
 	done
   fi
   rm -rf .uz_cache
-} | grep -Ev "^[[0-9]]$"}
+} | grep -Ev "^[\d{0,3}]$" }
 
 zclean() {
   if [ "${UZ_USE_EXA}" = true ]; then
