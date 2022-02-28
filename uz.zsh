@@ -20,6 +20,7 @@ zinstall() {
 	echo $plug >> $cache_file
   done
 
+  # installed_plugins: the plugins in the UZ_PLUGIN_PATH and in the array plugins
   if [ -d "$UZ_PLUGIN_PATH" ]; then
 	if [ "${UZ_USE_EXA}" = true ]; then
 	  for dir in $(exa -d --no-icons ${UZ_PLUGIN_PATH}/* | awk -F'/' '{print $NF}'); do
@@ -33,16 +34,11 @@ zinstall() {
       done
 	fi
   fi
+  # echo ${installed_plugins[@]}
 
-
-  while [[ $index2 -le ${#plugins[@]} ]]; do
-    use_plugins[$index2]=$(sed -n ${index2}p $cache_file)
-	((index2++))
-  done
-
-  for up in $use_plugins[@]; do
-	for ip in $installed_plugins[@]; do
-	  if [ "$up" = "$ip" ]; then
+  for p in ${plugins[@]}; do
+	for ip in ${installed_plugins[@]}; do
+	  if [ "$p" = "$ip" ]; then
 		exist=1
 		break
 	  else
@@ -50,10 +46,11 @@ zinstall() {
 	  fi
 	done
 	if [[ $exist -eq 0 ]]; then
-	  to_install[$index3]=$up
+	  to_install[$index3]=$p
 	  ((index3++))
 	fi
   done
+  # echo ${to_install[@]}
 
   if [ ${#to_install[@]} -eq 0 ]; then
 	rm -rf /tmp/.uz_cache
@@ -89,7 +86,16 @@ zinstall() {
 zload() {
   local zmodule=${1:t} zurl=${1} zscript=${2}
   local zpath=${UZ_PLUGIN_PATH}/${zmodule}
-  UZ_PLUGINS+=("${zpath}")
+  local exist=0
+  for uz_plugin in ${UZ_PLUGINS[@]}; do
+	if [ "$zpath" = "$uz_plugin" ]; then
+	  exist=1
+	  break
+	fi
+  done
+  if [[ $exist -eq 0 ]]; then
+    UZ_PLUGINS+=("${zpath}")
+  fi
 
   local zscripts=(${zpath}/(init.zsh|${zmodule:t}.(zsh|plugin.zsh|zsh-theme|sh))(NOL[1]))
   if    [[ -f ${zpath}/${zscript} ]]; then source ${zpath}/${zscript}
@@ -99,24 +105,9 @@ zload() {
 }
 
 # Autoload
-dis_auto_load=0
 for plugin in ${plugins[@]}; do
-  for dis_autoload in ${dis_autoloads[@]}; do
-	if [ "$plugin" = "$dis_autoload" ]; then
-	  dis_auto_load=1
-	  break
-	else
- 	  dis_auto_load=0
-	fi
-  done
-  if [[ $dis_auto_load -eq 0 ]]; then
-    zload $plugin
-  fi
+  zload $plugin
 done
-
-unset dis_auto_load
-unset dis_autoload
-unset dis_autoloads
 
 zupdate() {
 {

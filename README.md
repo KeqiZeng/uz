@@ -57,28 +57,7 @@ source ~/.uz/uz.zsh
 
 Then `source ~/.zshrc` or reopen the Terminal Emulator and run `zinstall`. `µz` will clone plugins in parallel.
 
-By default `µz` will source `init.zsh` or `plugin_name.(zsh|plugin.zsh|zsh-theme|sh)` automatically, but you can also tell it don't do that for you (for example you use [`zsh-vi-mode`](https://github.com/jeffreytse/zsh-vi-mode), and let it source some special plugins for you after `zsh-vi-mode` has been loaded, to avoid `zvm` overwritting the previous key bindings. In this special case, maybe you don't want `µz` to load these plugins again).
-
-An example:
-
-```zsh
-# don't autoload the plugins in the array dis_autoloads
-# add this before source uz.zsh
-dis_autoloads=(
-	      'hlissner/zsh-autopair'
-	      'zdharma-continuum/fast-syntax-highlighting'
-		# ...
-	)
-
-```
-
-```zsh
-# manually load
-# after source uz.zsh
-zload username/repo
-```
-
-Besides, you can also tell specify another script to the `zload` command as follows:
+By default `µz` will source `init.zsh` or `plugin_name.(zsh|plugin.zsh|zsh-theme|sh)` automatically, but you can also tell specify another script to the `zload` command as follows:
 
 ```zsh
 zload username/repo script_name
