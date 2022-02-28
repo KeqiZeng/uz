@@ -168,7 +168,7 @@ zupdate() {
 zclean() {
   if [ "${UZ_USE_EXA}" = true ]; then
     for p in $(comm -23 <(exa -1d --no-icons ${UZ_PLUGIN_PATH}/* | sort) <(printf '%s\n' $UZ_PLUGINS | sort)); do
-      while read "?Are you sure to clean $p? [y/n] " input; do
+	  while read "?Are you sure to clean $(echo "$p" | awk -F'/' '{print $NF}')? [y/n] " input; do
 	    if [[ $input = "y" || $input = "Y" ]]; then
 		  echo -e "\e[1;33mCleaning:\e[0m \e[3m${p}\e[0m"
 		  rm -rf $p
@@ -182,7 +182,7 @@ zclean() {
     done
   else
     for p in $(comm -23 <(ls -1d ${UZ_PLUGIN_PATH}/* | sort) <(printf '%s\n' $UZ_PLUGINS | sort)); do
-      while read "?Are you sure to clean $p? [y/n] " input; do
+	  while read "?Are you sure to clean $(echo "$p" | awk -F'/' '{print $NF}')? [y/n] " input; do
 	    if [[ $input = "y" || $input = "Y" ]]; then
 		  echo -e "\e[1;33mCleaning:\e[0m \e[3m${p}\e[0m"
 		  rm -rf $p
