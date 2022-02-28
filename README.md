@@ -86,7 +86,7 @@ zload username/repo script_name
 
 ### Manage Plugins
 
-- `zclean`: removes plugins no longer in the array `plugins`.
+- `zclean`: removes the plugins which not be loaded.
 - `zupdate`: update installed plugins in parallel.
 
 ### Installation Path
@@ -112,6 +112,6 @@ export UZ_USE_BAT=true
 
 ~~`μz` only creates folders for the cloned modules and, by default, are self contained into the installation directory.~~
 
-For pretty output, `μz` will create `.uz_cache` folder in current directory, when run `zinstall` adn `zupdate`. But don't worry about it, once the commands are over, `.uz_cache` will be removed.
+For pretty output, `μz` will create `.uz_cache` folder in `/tmp` directory, when run `zinstall` adn `zupdate`. But don't worry about it, once the commands are over, `.uz_cache` will be removed.
 
 To uninstall remove the installation directory (`$UZ_PATH`) and the modules folder (`$UZ_PLUGIN_PATH`) if applicable.

@@ -14,8 +14,8 @@ zinstall() {
 {
   local index1=1 index2=1 index3=1 exist=0
   declare -a installed_plugins use_plugins to_install
-  mktemp -d .uz_cache > /dev/null
-  local cache_file=$(mktemp .uz_cache/uz_cache.XXXX)
+  mktemp -d /tmp/.uz_cache > /dev/null
+  local cache_file=$(mktemp /tmp/.uz_cache/uz_cache.XXXX)
   for plug in $plugins[@]; do
 	echo $plug >> $cache_file
   done
@@ -56,7 +56,7 @@ zinstall() {
   done
 
   if [ ${#to_install[@]} -eq 0 ]; then
-	rm -rf .uz_cache
+	rm -rf /tmp/.uz_cache
 	return 1
   fi
 
@@ -67,7 +67,7 @@ zinstall() {
 	echo $p
   done
   for p in $to_install[@]; do
-	file[$i]=$(mktemp .uz_cache/uz_cache.XXXX)
+	file[$i]=$(mktemp /tmp/.uz_cache/uz_cache.XXXX)
 	zadd $p &> $file[$i] &
 	((i++))
   done
@@ -82,7 +82,7 @@ zinstall() {
 	fi
 	((j++))
   done
-  rm -rf .uz_cache
+  rm -rf /tmp/.uz_cache
   echo "\ndone"
 } | grep -Ev "^[\d{0,3}]$" }
 
@@ -114,20 +114,24 @@ for plugin in ${plugins[@]}; do
   fi
 done
 
+unset dis_auto_load
+unset dis_autoload
+unset dis_autoloads
+
 zupdate() {
 {
   local i=1
   local j=1
-  mktemp -d .uz_cache > /dev/null
+  mktemp -d /tmp/.uz_cache > /dev/null
   if [ "${UZ_USE_EXA}" = true ]; then
     for p in $(exa -d --no-icons ${UZ_PLUGIN_PATH}/*/.git); do
-	  file[$i]=$(mktemp .uz_cache/uz_cache.XXXX)
+	  file[$i]=$(mktemp /tmp/.uz_cache/uz_cache.XXXX)
 	  git -C ${p%/*} pull &> $file[$i] &
 	  ((i++))
     done
   else
     for p in $(ls -d ${UZ_PLUGIN_PATH}/*/.git); do
-	  file[$i]=$(mktemp .uz_cache/uz_cache.XXXX)
+	  file[$i]=$(mktemp /tmp/.uz_cache/uz_cache.XXXX)
 	  git -C ${p%/*} pull > $file[$i] &
 	  ((i++))
     done
@@ -158,24 +162,37 @@ zupdate() {
 	  ((j++))
 	done
   fi
-  rm -rf .uz_cache
+  rm -rf /tmp/.uz_cache
 } | grep -Ev "^[\d{0,3}]$" }
 
 zclean() {
   if [ "${UZ_USE_EXA}" = true ]; then
     for p in $(comm -23 <(exa -1d --no-icons ${UZ_PLUGIN_PATH}/* | sort) <(printf '%s\n' $UZ_PLUGINS | sort)); do
-      echo -e "\e[1;33mCleaning:\e[0m \e[3m${p}\e[0m"
-      rm -rf $p
+      while read "?Are you sure to clean $p? [y/n] " input; do
+	    if [[ $input = "y" || $input = "Y" ]]; then
+		  echo -e "\e[1;33mCleaning:\e[0m \e[3m${p}\e[0m"
+		  rm -rf $p
+		  break
+	    elif [[ $input = "n" || $input = "N" ]]; then
+		  break
+	    else
+	  	  echo "\e[1;31mInvalid input\e[0m, please input \e[1;32my/Y or n/N\e[0m."
+	    fi
+	  done
     done
   else
     for p in $(comm -23 <(ls -1d ${UZ_PLUGIN_PATH}/* | sort) <(printf '%s\n' $UZ_PLUGINS | sort)); do
-      echo -e "\e[1;33mCleaning:\e[0m \e[3m${p}\e[0m"
-      rm -rf $p
+      while read "?Are you sure to clean $p? [y/n] " input; do
+	    if [[ $input = "y" || $input = "Y" ]]; then
+		  echo -e "\e[1;33mCleaning:\e[0m \e[3m${p}\e[0m"
+		  rm -rf $p
+		  break
+	    elif [[ $input = "n" || $input = "N" ]]; then
+		  break
+	    else
+	  	  echo "\e[1;31mInvalid input\e[0m, please input \e[1;32my/Y or n/N\e[0m."
+	    fi
+	  done
     done
   fi
 }
-
-unset dis_auto_load
-unset dis_autoload
-unset dis_autoloads
-unset plugins
