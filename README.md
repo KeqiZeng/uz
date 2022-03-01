@@ -36,26 +36,30 @@ git clone https://github.com/KeqiZeng/uz.git ~/.uz
 
 ### Add Plugins
 
-Add plugins' Github repo to the array `plugins` in `.zshrc` and source `uz.zsh`
+Add plugins' Github repo and a value (which tells `µz` the plugin is a completion plugin or not) to the dictionary `plugins` in `.zshrc`. If the plugin is a completion plugin, value equal `1`, else the value equal `0`. After that, source `uz.zsh`.
 
 An example:
 
 ```zsh
 # in .zshrc
+declare -A plugins
 plugins=(
-	'zsh-users/zsh-completions'
-	'Aloxaf/fzf-tab'
-	'zsh-users/zsh-autosuggestions'
-	'hlissner/zsh-autopair'
-	'zdharma-continuum/fast-syntax-highlighting'
-	'jeffreytse/zsh-vi-mode'
-	# ...
+	 ['zsh-users/zsh-completions']=1
+	 ['esc/conda-zsh-completion']=1
+	 ['Aloxaf/fzf-tab']=0
+	 ['zsh-users/zsh-autosuggestions']=0
+	 ['hlissner/zsh-autopair']=0
+	 ['zdharma-continuum/fast-syntax-highlighting']=0
+	 ['jeffreytse/zsh-vi-mode']=0
+	 # ...
 	)
 
-source ~/.uz/uz.zsh
+source ~/.dotfiles/zsh/uz/uz.zsh
 ```
 
 Then `source ~/.zshrc` or reopen the Terminal Emulator and run `zinstall`. `µz` will clone plugins in parallel.
+
+You don't need to do `compinit`, `µz` will do it for you. All the completion plugins will be loaded before `compinit`, others will be loaded after. The `zcompdump` file will be stored in the directory `~/.cache/zsh`.
 
 By default `µz` will source `init.zsh` or `plugin_name.(zsh|plugin.zsh|zsh-theme|sh)` automatically, but you can also tell specify another script to the `zload` command as follows:
 
@@ -65,7 +69,7 @@ zload username/repo script_name
 
 ### Manage Plugins
 
-- `zclean`: removes the plugins which not be loaded.
+- `zclean`: removes the plugins which not in `.zshrc`.
 - `zupdate`: update installed plugins in parallel.
 
 ### Installation Path

@@ -16,7 +16,7 @@ zinstall() {
   declare -a installed_plugins use_plugins to_install
   mktemp -d /tmp/.uz_cache > /dev/null
   local cache_file=$(mktemp /tmp/.uz_cache/uz_cache.XXXX)
-  for plug in $plugins[@]; do
+  for plug in ${(k)plugins[@]}; do
 	echo $plug >> $cache_file
   done
 
@@ -36,23 +36,12 @@ zinstall() {
   fi
   # echo ${installed_plugins[@]}
 
-  for p in ${plugins[@]}; do
-	for ip in ${installed_plugins[@]}; do
-	  if [ "$p" = "$ip" ]; then
-		exist=1
-		break
-	  else
-	  	exist=0
-	  fi
-	done
-	if [[ $exist -eq 0 ]]; then
-	  to_install[$index3]=$p
-	  ((index3++))
-	fi
+  for p in ${(k)plugins[@]}; do
+	(( $installed_plugins[(I)$p] )) || { to_install[$index3]=$p; ((index3++)) }
   done
   # echo ${to_install[@]}
 
-  if [ ${#to_install[@]} -eq 0 ]; then
+  if [[ ${#to_install[@]} -eq 0 ]]; then
 	rm -rf /tmp/.uz_cache
 	return 1
   fi
@@ -86,16 +75,7 @@ zinstall() {
 zload() {
   local zmodule=${1:t} zurl=${1} zscript=${2}
   local zpath=${UZ_PLUGIN_PATH}/${zmodule}
-  local exist=0
-  for uz_plugin in ${UZ_PLUGINS[@]}; do
-	if [ "$zpath" = "$uz_plugin" ]; then
-	  exist=1
-	  break
-	fi
-  done
-  if [[ $exist -eq 0 ]]; then
-    UZ_PLUGINS+=("${zpath}")
-  fi
+  (( $UZ_PLUGINS[(I)$zpath] )) || UZ_PLUGINS+=("${zpath}")
 
   local zscripts=(${zpath}/(init.zsh|${zmodule:t}.(zsh|plugin.zsh|zsh-theme|sh))(NOL[1]))
   if    [[ -f ${zpath}/${zscript} ]]; then source ${zpath}/${zscript}
@@ -105,9 +85,23 @@ zload() {
 }
 
 # Autoload
-for plugin in ${plugins[@]}; do
+# load completion plugins
+for plugin in ${(k)plugins[@]}; do
+  if [[ ${plugins[$plugin]} -ne 0 ]]; then
+  # echo "$plugin is a completion plugin"
   zload $plugin
+  fi
 done
+
+autoload -U compinit && compinit -d ~/.cache/zsh/zcompdump-$ZSH_VERSION
+
+for plugin in ${(k)plugins[@]}; do
+  if [[ ${plugins[$plugin]} -eq 0 ]]; then
+  # echo "$plugin is not a completion plugin"
+  zload $plugin
+  fi
+done
+
 
 zupdate() {
 {
@@ -123,7 +117,7 @@ zupdate() {
   else
     for p in $(ls -d ${UZ_PLUGIN_PATH}/*/.git); do
 	  file[$i]=$(mktemp /tmp/.uz_cache/uz_cache.XXXX)
-	  git -C ${p%/*} pull > $file[$i] &
+	  git -C ${p%/*} pull &> $file[$i] &
 	  ((i++))
     done
   fi
