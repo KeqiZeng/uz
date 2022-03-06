@@ -161,7 +161,7 @@ zclean() {
 	    elif [[ $input = "n" || $input = "N" ]]; then
 		  break
 	    else
-	  	  echo "\e[1;31mInvalid input\e[0m, please input \e[1;32my/Y or n/N\e[0m."
+	  	  echo -e "\e[1;31mInvalid input\e[0m, please input \e[1;32my/Y or n/N\e[0m."
 	    fi
 	  done
     done
@@ -175,7 +175,7 @@ zclean() {
 	    elif [[ $input = "n" || $input = "N" ]]; then
 		  break
 	    else
-	  	  echo "\e[1;31mInvalid input\e[0m, please input \e[1;32my/Y or n/N\e[0m."
+	  	  echo -e "\e[1;31mInvalid input\e[0m, please input \e[1;32my/Y or n/N\e[0m."
 	    fi
 	  done
     done
