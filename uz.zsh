@@ -3,15 +3,15 @@ typeset UZ_PATH=${0:A:h}
 typeset UZ_PLUGIN_PATH=${UZ_PLUGIN_PATH:-${UZ_PATH}/plugins}
 typeset -a UZ_PLUGINS
 
-zadd() {
-  local zmodule=${1:t} zurl=${1}
-  local zpath=${UZ_PLUGIN_PATH}/${zmodule}
-  mkdir -p ${zpath}
-  git clone --recursive https://github.com/${zurl}.git ${zpath}
-}
-
 zinstall() {
 {
+  zadd() {
+	local zmodule=${1:t} zurl=${1}
+	local zpath=${UZ_PLUGIN_PATH}/${zmodule}
+	mkdir -p ${zpath}
+	git clone --recursive https://github.com/${zurl}.git ${zpath}
+  }
+
   local index1=1 index2=1 index3=1 exist=0
   declare -a installed_plugins use_plugins to_install
   mktemp -d /tmp/.uz_cache > /dev/null
