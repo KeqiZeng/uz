@@ -14,7 +14,8 @@ zinstall() {
 
   local index1=1 index2=1 index3=1 exist=0
   declare -a installed_plugins use_plugins to_install
-  mktemp -d /tmp/.uz_cache > /dev/null
+  #mktemp -d /tmp/.uz_cache > /dev/null
+	mkdir /tmp/.uz_cache
   local cache_file=$(mktemp /tmp/.uz_cache/uz_cache.XXXX)
   for plug in ${(k)plugins[@]}; do
 	echo $plug >> $cache_file
