@@ -19,11 +19,6 @@
 - `zsh`
 - `git`
 
-### Options
-
-- [`exa`](https://github.com/ogham/exa)
-- [`bat`](https://github.com/sharkdp/bat)
-
 ## Installation
 
 Just clone from GitHub
@@ -78,17 +73,6 @@ By default plugins are installed into `~/${UZ_PATH}/plugins`. This behavior can 
 
 ```zsh
 export UZ_PLUGIN_PATH=${UZ_PATH}/plugins # default
-```
-
-### Options
-
-If you use `exa` to replace `ls`, you can tell `µz` to use `exa` instead of `ls`.
-For `bat` to replace `cat`, it's same.
-
-```zsh
-# in .zshrc
-export UZ_USE_EXA=true
-export UZ_USE_BAT=true
 ```
 
 ## Uninstall
