@@ -12,7 +12,7 @@
 
 ![GitHub file size in bytes](https://img.shields.io/github/size/KeqiZeng/uz/uz.zsh?color=green&label=uz.zsh&logo=uz.zsh%20size&style=flat-square)
 
-[µz](https://github.com/maxrodrigo/uz) with parallel install and update.
+[µz](https://github.com/maxrodrigo/uz) with parallel features.
 
 ## Requirements
 
@@ -31,23 +31,36 @@ git clone https://github.com/KeqiZeng/uz.git ~/.uz
 
 ### Add Plugins
 
-Add plugins' Github repo and a value (which tells `µz` the plugin is a completion plugin or not) to the dictionary `plugins` in `.zshrc`. If the plugin is a completion plugin, value equal `1`, else the value equal `0`. After that, source `uz.zsh`.
+Add plugins' Github repo and a value (0, 1, 2, 3) to the dictionary `plugins` in `.zshrc`.
+
+If the plugin is a completion plugin, set the value to `1`;
+
+if the plugin needs to be frozen (without update), set the value to `2`;
+
+if the plugin is a completion plugin and needs to be frozen, set the value to `3`;
+
+else set the value to `0`. 
+
+After that, source `uz.zsh`.
 
 An example:
 
 ```zsh
 # in .zshrc
 declare -A plugins
+# 0: default
+# 1: completions plugin 
+# 2: frozen plugin
+# 3: frozen completions plugin
 plugins=(
-	 ['zsh-users/zsh-completions']=1
-	 ['esc/conda-zsh-completion']=1
-	 ['Aloxaf/fzf-tab']=0
-	 ['zsh-users/zsh-autosuggestions']=0
-	 ['hlissner/zsh-autopair']=0
-	 ['zdharma-continuum/fast-syntax-highlighting']=0
-	 ['jeffreytse/zsh-vi-mode']=0
-	 # ...
-	)
+	['zsh-users/zsh-completions']=1
+	['esc/conda-zsh-completion']=3
+  	['Aloxaf/fzf-tab']=0
+    ['thirteen37/fzf-brew']=2
+	['zsh-users/zsh-autosuggestions']=0
+    ['hlissner/zsh-autopair']=0
+	['zdharma-continuum/fast-syntax-highlighting']=0
+  )
 
 source ~/.dotfiles/zsh/uz/uz.zsh
 ```

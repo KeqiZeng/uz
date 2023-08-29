@@ -14,12 +14,12 @@ zinstall() {
 
   local index1=1
 	local index2=1
-  declare -a installed_plugins use_plugins to_install
-  #mktemp -d /tmp/.uz_cache > /dev/null
-	mkdir /tmp/.uz_cache
+  declare -a installed_plugins to_install
+  mktemp -d /tmp/.uz_cache > /dev/null
+  # mkdir /tmp/.uz_cache
   local cache_file=$(mktemp /tmp/.uz_cache/uz_cache.XXXX)
-  for plug in ${(k)plugins[@]}; do
-		echo $plug >> $cache_file
+  for plugin in ${(k)plugins[@]}; do
+		echo $plugin >> $cache_file
   done
 
   # installed_plugins: the plugins in the UZ_PLUGIN_PATH and in the array plugins
@@ -29,6 +29,7 @@ zinstall() {
 			((index1++))
 		done
   fi
+
   # echo ${installed_plugins[@]}
 
   for p in ${(k)plugins[@]}; do
@@ -46,14 +47,14 @@ zinstall() {
   echo "\e[1;32mInstalling: \e[0m"
   for p in $to_install[@]; do
 		echo $p
-	done
-  for p in $to_install[@]; do
 		file[$i]=$(mktemp /tmp/.uz_cache/uz_cache.XXXX)
 		zadd $p &> $file[$i] &
 		((i++))
-  done
+	done
+
   wait
   echo ""
+
   for p in $to_install[@]; do
     echo -ne "\e[1;32m$p: \e[0m\n"
 		command cat $file[$j]
@@ -78,8 +79,8 @@ zload() {
 # Autoload
 # load completion plugins
 for plugin in ${(k)plugins[@]}; do
-  if [[ ${plugins[$plugin]} -ne 0 ]]; then
-  # echo "$plugin is a completion plugin"
+  if [[ ${plugins[$plugin]} -eq 1 || ${plugins[$plugin]} -eq 3 ]]; then
+  echo "$plugin is a completion plugin"
   zload $plugin
   fi
 done
@@ -87,8 +88,8 @@ done
 autoload -U compinit && compinit -d ~/.cache/zsh/zcompdump-$ZSH_VERSION
 
 for plugin in ${(k)plugins[@]}; do
-  if [[ ${plugins[$plugin]} -eq 0 ]]; then
-  # echo "$plugin is not a completion plugin"
+  if [[ ${plugins[$plugin]} -ne 1 && ${plugins[$plugin]} -ne 3 ]]; then
+  echo "$plugin is not a completion plugin"
   zload $plugin
   fi
 done
@@ -96,23 +97,39 @@ done
 
 zupdate() {
 {
+  mktemp -d /tmp/.uz_cache > /dev/null
+
+  declare -a to_update
+  local index=1
+  for p in $(command ls -d ${UZ_PLUGIN_PATH}/*); do
+    for plugin in ${(k)plugins[@]}; do
+      if [[ ${p##*/} == ${plugin##*/} && ${plugins[$plugin]} -ne 2 && ${plugins[$plugin]} -ne 3 ]]; then
+        to_update[$index]=$p
+        ((index++))
+      fi
+    done
+  done
+
+  # echo ${to_update[@]}
+
   local i=1
   local j=1
-  mktemp -d /tmp/.uz_cache > /dev/null
-	for p in $(command ls -d ${UZ_PLUGIN_PATH}/*/.git); do
+	for p in ${to_update[@]}; do
 		file[$i]=$(mktemp /tmp/.uz_cache/uz_cache.XXXX)
-		git -C ${p%/*} pull &> $file[$i] &
+		git -C $p pull &> $file[$i] &
 		((i++))
 	done
 
   wait
   echo ""
-	for p in $(command ls -d ${UZ_PLUGIN_PATH}/*/.git); do
-		echo -ne "\e[1;32m${${p%/*}:t}: \e[0m\n"
+
+	for p in ${to_update[@]}; do
+		echo -ne "\e[1;32m${p##*/}: \e[0m\n"
 		command cat $file[$j]
 	echo ""
 	((j++))
-done
+  done
+
   rm -rf /tmp/.uz_cache
 } | grep -Ev "^[\d{0,3}]$" }
 
