@@ -80,7 +80,7 @@ zload() {
 # load completion plugins
 for plugin in ${(k)plugins[@]}; do
   if [[ ${plugins[$plugin]} -eq 1 || ${plugins[$plugin]} -eq 3 ]]; then
-  echo "$plugin is a completion plugin"
+  # echo "$plugin is a completion plugin"
   zload $plugin
   fi
 done
@@ -89,7 +89,7 @@ autoload -U compinit && compinit -d ~/.cache/zsh/zcompdump-$ZSH_VERSION
 
 for plugin in ${(k)plugins[@]}; do
   if [[ ${plugins[$plugin]} -ne 1 && ${plugins[$plugin]} -ne 3 ]]; then
-  echo "$plugin is not a completion plugin"
+  # echo "$plugin is not a completion plugin"
   zload $plugin
   fi
 done
