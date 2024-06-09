@@ -79,21 +79,24 @@ zload() {
 # Autoload
 # load completion plugins
 for plugin in ${(k)plugins[@]}; do
-  if [[ ${plugins[$plugin]} -eq 1 || ${plugins[$plugin]} -eq 3 ]]; then
-  # echo "$plugin is a completion plugin"
-  zload $plugin
+  eval "declare -A plugin_data=${plugins[$plugin]}"
+    
+  if [[ ${plugin_data[completion]} -eq 0 ]]; then
+    # echo "$plugin is a completion plugin"
+    zload $plugin
   fi
 done
 
 autoload -U compinit && compinit -d ~/.cache/zsh/zcompdump-$ZSH_VERSION
 
 for plugin in ${(k)plugins[@]}; do
-  if [[ ${plugins[$plugin]} -ne 1 && ${plugins[$plugin]} -ne 3 ]]; then
-  # echo "$plugin is not a completion plugin"
-  zload $plugin
+  eval "declare -A plugin_data=${plugins[$plugin]}"
+    
+  if [[ ${plugin_data[completion]} -ne 0 ]]; then
+    # echo "$plugin is not a completion plugin"
+    zload $plugin
   fi
 done
-
 
 zupdate() {
 {
@@ -103,7 +106,8 @@ zupdate() {
   local index=1
   for p in $(command ls -d ${UZ_PLUGIN_PATH}/*); do
     for plugin in ${(k)plugins[@]}; do
-      if [[ ${p##*/} == ${plugin##*/} && ${plugins[$plugin]} -ne 2 && ${plugins[$plugin]} -ne 3 ]]; then
+      eval "declare -A plugin_data=${plugins[$plugin]}"
+      if [[ ${p##*/} == ${plugin##*/} && ${plugin_data[frozen]} -ne 0 ]]; then
         to_update[$index]=$p
         ((index++))
       fi

@@ -31,40 +31,22 @@ git clone https://github.com/KeqiZeng/uz.git ~/.uz
 
 ### Add Plugins
 
-Add plugins' Github repo and a value (0, 1, 2, 3) to the dictionary `plugins` in `.zshrc`.
-
-If the plugin is a completion plugin, set the value to `1`;
-
-if the plugin needs to be frozen (without update), set the value to `2`;
-
-if the plugin is a completion plugin and needs to be frozen, set the value to `3`;
-
-else set the value to `0`. 
-
-After that, source `uz.zsh`.
-
-An example:
-
 ```zsh
 # in .zshrc
 declare -A plugins
-# 0: default
-# 1: completions plugin 
-# 2: frozen plugin
-# 3: frozen completions plugin
+
 plugins=(
-	['zsh-users/zsh-completions']=1
-	['esc/conda-zsh-completion']=3
-  	['Aloxaf/fzf-tab']=0
-    ['thirteen37/fzf-brew']=2
-	['zsh-users/zsh-autosuggestions']=0
-    ['hlissner/zsh-autopair']=0
-	['zdharma-continuum/fast-syntax-highlighting']=0
-  )
+  ['zsh-users/zsh-completions']="( [completion]=0 [frozen]=1 )" # 0: true 1: false
+  ['esc/conda-zsh-completion']="( [completion]=0 [frozen]=1 )"
+  ['Aloxaf/fzf-tab']="( [completion]=1 [frozen]=1 )"
+  ['zsh-users/zsh-autosuggestions']="( [completion]=1 [frozen]=1 )"
+  ['hlissner/zsh-autopair']="( [completion]=1 [frozen]=0 )"
+  ['zdharma-continuum/fast-syntax-highlighting']="( [completion]=1 [frozen]=1 )"
+)
 
 source ~/.dotfiles/zsh/uz/uz.zsh
 ```
-
+**Note:** If a plugin is a completion plugin, please set `completion` to `0`. If you don't want `µz` to update a plugin, set `frozen` to `0`.
 Then `source ~/.zshrc` or reopen the Terminal Emulator and run `zinstall`. `µz` will clone plugins in parallel.
 
 You don't need to do `compinit`, `µz` will do it for you. All the completion plugins will be loaded before `compinit`, others will be loaded after. The `zcompdump` file will be stored in the directory `~/.cache/zsh`.
@@ -92,6 +74,6 @@ export UZ_PLUGIN_PATH=${UZ_PATH}/plugins # default
 
 ~~`μz` only creates folders for the cloned modules and, by default, are self contained into the installation directory.~~
 
-For pretty output, `μz` will create `.uz_cache` folder in `/tmp` directory, when run `zinstall` adn `zupdate`. But don't worry about it, once the commands are over, `.uz_cache` will be removed.
+For pretty output, `μz` will create `.uz_cache` folder in `/tmp` directory, when run `zinstall` and `zupdate`. But don't worry about it, once the commands are over, `.uz_cache` will be removed.
 
 To uninstall remove the installation directory (`$UZ_PATH`) and the modules folder (`$UZ_PLUGIN_PATH`) if applicable.
