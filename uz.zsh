@@ -93,6 +93,8 @@ autoload -U compinit && compinit -d ~/.cache/zsh/zcompdump-$ZSH_VERSION
 
 zupdate() {
 {
+    git -C ${UZ_PATH} pull
+
     mktemp -d /tmp/.uz_cache > /dev/null
     local -aU to_update=("${UZ_PLUGIN_PATH}"/*(N))
 

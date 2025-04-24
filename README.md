@@ -47,7 +47,7 @@ plugins=(
 source ${UZ_PATH}/uz.zsh
 ```
 
-Then `source ~/.zshrc` or reopen the Terminal Emulator and run `zinstall`. `µz` will clone plugins from GitHub in parallel.
+Then reopen the Terminal Emulator and run `zinstall`. `µz` will clone plugins from GitHub in parallel.
 
 You don't need to do `compinit`, `µz` will do it for you. All the completion plugins will be loaded before `compinit`. The `zcompdump` file will be stored in the directory `~/.cache/zsh`.
 
