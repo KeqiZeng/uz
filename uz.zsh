@@ -93,6 +93,7 @@ autoload -U compinit && compinit -d ~/.cache/zsh/zcompdump-$ZSH_VERSION
 
 zupdate() {
 {
+    echo -e "\e[1;32mUpdating uz:\e[0m \e[3m${UZ_PATH}\e[0m"
     git -C ${UZ_PATH} pull
 
     mktemp -d /tmp/.uz_cache > /dev/null
